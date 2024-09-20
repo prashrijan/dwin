@@ -1,0 +1,10 @@
+RewriteEngine On
+RewriteBase /DWINGroupProject/admin/
+
+# Redirect the root URL to admin_login.php
+RewriteRule ^$ admin_login.php [L]
+
+# If the requested file or directory doesn't exist, redirect to admin_login.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . admin_login.php [L]
