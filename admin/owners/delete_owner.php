@@ -8,21 +8,21 @@ if (!isset($_SESSION['admin_id'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = trim($_POST['property_type_name']);
+    $ownerId = $_POST['owner_id'];
 
-    if (empty($name)) {
-        echo json_encode(['success' => false, 'error' => 'Property type name is required']);
+    if (empty($ownerId)) {
+        echo json_encode(['success' => false, 'error' => 'Owner ID is required']);
         exit();
     }
 
-    $sql = "INSERT INTO property_types (name) VALUES (?)";
+    $sql = "DELETE FROM owners WHERE id = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $name);
+    $stmt->bind_param("i", $ownerId);
 
     if ($stmt->execute()) {
         echo json_encode(['success' => true]);
     } else {
-        echo json_encode(['success' => false, 'error' => 'Error adding property type: ' . $conn->error]);
+        echo json_encode(['success' => false, 'error' => 'Error deleting owner: ' . $conn->error]);
     }
 
     $stmt->close();
@@ -31,4 +31,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $conn->close();
-?>

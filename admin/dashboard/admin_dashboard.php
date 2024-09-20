@@ -38,7 +38,7 @@ function loadContent($action, $conn) {
         case 'city':
             return generateCityContent($conn);
         case 'owner':
-            return "<h2>Owner Details</h2><p>View owner details here.</p>";
+            return generateOwnerTable($conn);
         case 'agents':
             return "<h2>Agent Details</h2><p>View agent details here.</p>";
         case 'user':
@@ -440,25 +440,30 @@ function generateCityContent($conn) {
     // Add city form
     $output .= "
     <form id='addCityForm' class='mb-4'>
-        <select name='country_id' required>
+        <select name='country_id' id='cityCountrySelect' required>
             <option value=''>Select Country</option>
             " . getCountryOptions($conn) . "
+        </select>
+        <select name='state_id' id='cityStateSelect' required>
+            <option value=''>Select State</option>
         </select>
         <input type='text' name='city_name' placeholder='Enter city name' required>
         <button type='submit'>Add City</button>
     </form>";
     
     // Fetch existing cities
-    $sql = "SELECT ci.id, ci.name, c.name AS country_name 
+    $sql = "SELECT ci.id, ci.name, s.name AS state_name, c.name AS country_name 
             FROM cities ci 
-            JOIN countries c ON ci.country_id = c.id 
-            ORDER BY c.name, ci.name";
+            JOIN states s ON ci.state_id = s.id 
+            JOIN countries c ON s.country_id = c.id 
+            ORDER BY c.name, s.name, ci.name";
     $result = $conn->query($sql);
     
     $output .= "<table class='city-table property-table'>
                     <thead>
                         <tr>
                             <th>Country</th>
+                            <th>State</th>
                             <th>City</th>
                             <th>Actions</th>
                         </tr>
@@ -468,6 +473,7 @@ function generateCityContent($conn) {
     while ($row = $result->fetch_assoc()) {
         $output .= "<tr data-city-id='{$row['id']}'>
                         <td>{$row['country_name']}</td>
+                        <td>{$row['state_name']}</td>
                         <td>{$row['name']}</td>
                         <td>
                             <a href='#' class='action-icon edit-city' data-id='{$row['id']}'><i class='ri-pencil-line'></i></a>
@@ -481,7 +487,27 @@ function generateCityContent($conn) {
     // Add JavaScript for form submission and table updates
     $output .= <<<EOT
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    function initializeCityManagement() {
+        const countrySelect = document.getElementById('cityCountrySelect');
+        const stateSelect = document.getElementById('cityStateSelect');
+
+        countrySelect.addEventListener('change', function() {
+            const countryId = this.value;
+            stateSelect.innerHTML = '<option value="">Select State</option>';
+            if (countryId) {
+                fetch('../states/get_states.php?country_id=' + countryId)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(state => {
+                            const option = document.createElement('option');
+                            option.value = state.id;
+                            option.textContent = state.name;
+                            stateSelect.appendChild(option);
+                        });
+                    });
+            }
+        });
+
         document.getElementById('addCityForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const formData = new FormData(this);
@@ -505,23 +531,12 @@ function generateCityContent($conn) {
             });
         });
 
-        function refreshCityTable() {
-            fetch('../cities/get_city_table.php')
-                .then(response => response.text())
-                .then(html => {
-                    document.querySelector('.city-table').outerHTML = html;
-                })
-                .catch(error => {
-                    console.error('Error refreshing city table:', error);
-                });
-        }
-
         // Add event listeners for edit and delete actions
         document.querySelector('.city-table').addEventListener('click', function(e) {
             if (e.target.closest('.edit-city')) {
                 e.preventDefault();
                 const cityId = e.target.closest('.edit-city').dataset.id;
-                const cityName = e.target.closest('tr').querySelectorAll('td')[1].textContent;
+                const cityName = e.target.closest('tr').querySelectorAll('td')[2].textContent;
                 const newName = prompt('Enter new name for ' + cityName, cityName);
                 if (newName && newName !== cityName) {
                     updateCity(cityId, newName);
@@ -534,53 +549,108 @@ function generateCityContent($conn) {
                 }
             }
         });
+    }
 
-        function updateCity(id, newName) {
-            fetch('../cities/update_city.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'id=' + id + '&name=' + encodeURIComponent(newName)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('City updated successfully!');
-                    refreshCityTable();
-                } else {
-                    alert('Error updating city: ' + data.error);
-                }
+    function refreshCityTable() {
+        fetch('../cities/get_city_table.php')
+            .then(response => response.text())
+            .then(html => {
+                document.querySelector('.city-table').outerHTML = html;
+                initializeCityManagement();
             })
             .catch(error => {
-                console.error('Error:', error);
+                console.error('Error refreshing city table:', error);
             });
-        }
+    }
 
-        function deleteCity(id) {
-            fetch('../cities/delete_city.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'id=' + id
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('City deleted successfully!');
-                    refreshCityTable();
-                } else {
-                    alert('Error deleting city: ' + data.error);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
-    });
+    function updateCity(id, newName) {
+        fetch('../cities/update_city.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'id=' + id + '&name=' + encodeURIComponent(newName)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('City updated successfully!');
+                refreshCityTable();
+            } else {
+                alert('Error updating city: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    function deleteCity(id) {
+        fetch('../cities/delete_city.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'id=' + id
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('City deleted successfully!');
+                refreshCityTable();
+            } else {
+                alert('Error deleting city: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    // Initialize the city management functionality
+    initializeCityManagement();
     </script>
 EOT;
+    
+    return $output;
+}
+
+function generateOwnerTable($conn) {
+    error_log("Generating owner table"); // Add this line for debugging
+    $sql = "SELECT id, firstName, lastName, email, phone FROM owners ORDER BY lastName, firstName";
+    $result = $conn->query($sql);
+    
+    if (!$result) {
+        error_log("SQL Error: " . $conn->error); // Add this line for debugging
+        return "Error fetching owners: " . $conn->error;
+    }
+    
+    $output = "<h2>Owner Management</h2>";
+    $output .= "<table class='owner-table property-table'>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>";
+    
+    while ($row = $result->fetch_assoc()) {
+        $output .= "<tr data-owner-id='{$row['id']}'>
+                        <td>{$row['lastName']}, {$row['firstName']}</td>
+                        <td>{$row['email']}</td>
+                        <td>{$row['phone']}</td>
+                        <td>
+                            <a href='#' class='action-icon edit-owner' data-id='{$row['id']}'><i class='ri-pencil-line'></i></a>
+                            <a href='#' class='action-icon delete-owner' data-id='{$row['id']}'><i class='ri-delete-bin-line'></i></a>
+                        </td>
+                    </tr>";
+    }
+    
+    $output .= "</tbody></table>";
+    $output .= "<a href='#' class='add-owner-btn'><i class='ri-add-line'></i> Add Owner</a>";
     
     return $output;
 }
