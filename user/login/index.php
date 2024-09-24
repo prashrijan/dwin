@@ -12,21 +12,206 @@ if (!isset($_SESSION['user_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Core Real Estate - Home</title>
-    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #a81e35;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 1rem;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+        }
+
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 90%;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero {
+            background-color: #a81e35;
+            color: black;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .hero .btn {
+            background-color: white;
+            color: #a81e35;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        .hero .btn:hover {
+            background-color: #f4f4f4;
+        }
+
+        .property-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .property-card {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .property-card h3 {
+            color: #a81e35;
+            margin-bottom: 0.5rem;
+        }
+
+        .property-card p {
+            margin: 0.5rem 0;
+        }
+
+        /* Contact Us Page Styles */
+        .contact-container {
+            max-width: 600px;
+            width: 90%;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-container h2 {
+            color: #a81e35;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .contact-container form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .contact-container form input,
+        .contact-container form textarea {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+
+        .contact-container form button {
+            background-color: #a81e35;
+            color: white;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .contact-container form button:hover {
+            background-color: #8a1a2c;
+        }
+
+        /* Featured Property Container Styles */
+        .featured-property-container {
+            max-width: 1200px;
+            width: 90%;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .featured-property-container h2 {
+            color: #a81e35;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .featured-property-container .property-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .featured-property-container .property-card {
+            background-color: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+
+        .featured-property-container .property-card h3 {
+            color: #333;
+            margin-bottom: 0.75rem;
+        }
+
+        .featured-property-container .property-card p {
+            margin: 0.75rem 0;
+            color: #666;
+        }
+
+        .featured-property-container .property-card .price {
+            color: #a81e35;
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+    </style>
 </head>
 <body>
     <header>
         <nav>
-            <div class="container">
-                <h1>Core Real Estate</h1>
-                <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#properties">Properties</a></li>
-                    <li><a href="#about">About Us</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                    <li><a href="logout.php">Logout</a></li>
-                </ul>
-            </div>
+            <h1>Core Real Estate</h1>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#properties">Properties</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="logout.php">Logout</a></li>
+            </ul>
         </nav>
     </header>
 
@@ -40,21 +225,27 @@ if (!isset($_SESSION['user_id'])) {
         </section>
 
         <section id="properties">
-            <div class="container">
+            <div class="featured-property-container">
                 <h2>Featured Properties</h2>
-                <!-- Add property listings here -->
                 <div class="property-grid">
-                    <div class="property-card">
-                        <img src="../images/property1.jpg" alt="Property 1">
-                        <h3>Luxury Villa</h3>
-                        <p>$1,200,000</p>
-                    </div>
-                    <div class="property-card">
-                        <img src="../images/property2.jpg" alt="Property 2">
-                        <h3>Modern Apartment</h3>
-                        <p>$500,000</p>
-                    </div>
-                    <!-- Add more property cards as needed -->
+                    <?php
+                    // Fetch properties from the database
+                    $sql = "SELECT * FROM properties";
+                    $result = $conn->query($sql); 
+
+                    if ($result->num_rows > 0) {
+                        // Output data of each row
+                        while($row = $result->fetch_assoc()) {
+                            echo "<div class='property-card'>";
+                            echo "<h3>" . htmlspecialchars($row["title"]) . "</h3>";
+                            echo "<p>" . htmlspecialchars($row["description"]) . "</p>";
+                            echo "<p>Price: $" . htmlspecialchars($row["price"]) . "</p>";
+                            echo "</div>";
+                        }
+                    } else {
+                        echo "No properties found.";
+                    }
+                    ?>
                 </div>
             </div>
         </section>
@@ -78,7 +269,7 @@ if (!isset($_SESSION['user_id'])) {
         </section>
 
         <section id="contact">
-            <div class="container">
+            <div class="contact-container">
                 <h2>Contact Us</h2>
                 <form>
                     <input type="text" name="name" placeholder="Your Name" required>
