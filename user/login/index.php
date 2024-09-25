@@ -288,3 +288,5 @@ if (!isset($_SESSION['user_id'])) {
     </footer>
 </body>
 </html>
+
+<!-- this is a test -->
