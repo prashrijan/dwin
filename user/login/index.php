@@ -30,6 +30,12 @@ if (!isset($_SESSION['user_id'])) {
             padding: 1rem;
         }
 
+        nav{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
         nav ul {
             list-style-type: none;
             padding: 0;
@@ -51,22 +57,14 @@ if (!isset($_SESSION['user_id'])) {
             text-decoration: underline;
         }
 
-        .container {
+        .home-container {
             max-width: 500px;
             width: 90%;
             margin: 2rem auto;
-            padding: 2rem;
-            background-color: white;
             border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .hero {
-            background-color: #a81e35;
-            color: black;
-            padding: 2rem 0;
             text-align: center;
         }
+
 
         .hero .btn {
             background-color: white;
@@ -77,6 +75,7 @@ if (!isset($_SESSION['user_id'])) {
             cursor: pointer;
             text-decoration: none;
             font-size: 1rem;
+            margin-top: 1rem;
         }
 
         .hero .btn:hover {
@@ -106,9 +105,16 @@ if (!isset($_SESSION['user_id'])) {
             margin: 0.5rem 0;
         }
 
+        .about-container{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
         /* Contact Us Page Styles */
         .contact-container {
-            max-width: 600px;
+            max-width: 900px;
             width: 90%;
             margin: 2rem auto;
             padding: 2rem;
@@ -199,6 +205,28 @@ if (!isset($_SESSION['user_id'])) {
             font-weight: bold;
             margin-top: 1rem;
         }
+
+        /* Footer Container Styles */
+        .footer-container {
+            background-color: #a81e35;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .footer-container p {
+            margin: 0;
+        }
+
+        .footer-container a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .footer-container a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -210,6 +238,7 @@ if (!isset($_SESSION['user_id'])) {
                 <li><a href="#properties">Properties</a></li>
                 <li><a href="#about">About Us</a></li>
                 <li><a href="#contact">Contact</a></li>
+                <li><a href="../profile/profile.php">Profile</a></li>
                 <li><a href="logout.php">Logout</a></li>
             </ul>
         </nav>
@@ -217,8 +246,8 @@ if (!isset($_SESSION['user_id'])) {
 
     <main>
         <section id="home" class="hero">
-            <div class="container">
-                <h2>Welcome to Core Real Estate, <?php echo htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_name']); ?>!</h2>
+            <div class="home-container">
+                <h2>Welcome to Core Real Estate, <?php echo htmlspecialchars($_SESSION['first_name']); ?>!</h2>
                 <p>Discover your dream home with us.</p>
                 <a href="#properties" class="btn">View Properties</a>
             </div>
@@ -251,7 +280,7 @@ if (!isset($_SESSION['user_id'])) {
         </section>
 
         <section id="about">
-            <div class="container">
+            <div class="about-container">
                 <h2>About Core Real Estate</h2>
                 <?php
                 // Fetch the "About Us" content from the database
@@ -282,13 +311,10 @@ if (!isset($_SESSION['user_id'])) {
     </main>
 
     <footer>
-        <div class="container">
-            <p>&copy; 2023 Core Real Estate. All rights reserved.</p>
+        <div class="footer-container">
+            <p>&copy; 2024 Core Real Estate. All rights reserved.</p>
         </div>
     </footer>
 </body>
 </html>
 
-<!-- this is a test -->
-
-<!-- git jhasgjdgajhdkjhajkhfdkjhsdkljfhkj -->
