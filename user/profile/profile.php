@@ -109,6 +109,22 @@ $stmt->close();
         .footer-container p {
             margin: 0;
         }
+
+        .edit-button {
+            background-color: #a81e35;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .edit-button:hover {
+            background-color: #8a1a2c;
+        }
     </style>
 </head>
 <body>
@@ -135,6 +151,7 @@ $stmt->close();
                 <p><strong>Last Name:</strong> <?php echo htmlspecialchars($user['lastName']); ?></p>
                 <p><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
                 <!-- Add more user information as needed -->
+                <button class="edit-button" onclick="location.href='edit_profile.php'">Edit Profile</button>
             </div>
         </div>
     </main>

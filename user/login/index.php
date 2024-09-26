@@ -5,6 +5,22 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
 }
+
+// Fetch user data if firstName or lastName is not set in the session
+if (!isset($_SESSION['firstName']) || !isset($_SESSION['lastName'])) {
+    $user_id = $_SESSION['user_id'];
+    $sql = "SELECT firstName, lastName FROM users WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($user = $result->fetch_assoc()) {
+        $_SESSION['firstName'] = $user['firstName'];
+        $_SESSION['lastName'] = $user['lastName'];
+    }
+    $stmt->close();
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -247,7 +263,7 @@ if (!isset($_SESSION['user_id'])) {
     <main>
         <section id="home" class="hero">
             <div class="home-container">
-                <h2>Welcome to Core Real Estate, <?php echo htmlspecialchars($_SESSION['first_name']); ?>!</h2>
+                <h2>Welcome to Core Real Estate, <?php echo htmlspecialchars($_SESSION['firstName'] ?? '') ; ?>!</h2>
                 <p>Discover your dream home with us.</p>
                 <a href="#properties" class="btn">View Properties</a>
             </div>
