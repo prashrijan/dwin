@@ -8,7 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     
     // Handle file upload
-    $targetDir = $_SERVER['DOCUMENT_ROOT'] . "/DWINGroupProject/uploads/";
+    $targetDir = $_SERVER['DOCUMENT_ROOT'] . "../uploads";
     
     // Create the directory if it doesn't exist
     if (!file_exists($targetDir)) {
